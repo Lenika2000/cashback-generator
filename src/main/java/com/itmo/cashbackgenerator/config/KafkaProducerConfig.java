@@ -31,6 +31,14 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, kafkaProducerId);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        String jaasTemplate = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
+        String jaasCfg = String.format(jaasTemplate, "cashback-generator", "12345678");
+        props.put("sasl.jaas.config", jaasCfg);
+        props.put("security.protocol", "SASL_SSL");
+        props.put("sasl.mechanism", "SCRAM-SHA-512");
+        props.put("ssl.truststore.location", "/etc/security/ssl");
+        props.put("ssl.truststore.password", "changeit");
         return props;
     }
 
